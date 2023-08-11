@@ -1,0 +1,64 @@
+name: Run Examples
+
+# NOTE: For some reason, running the workflows with toil-cwl-runner takes
+# almost exactly twice as much time as cwltool. Since we do not want to triple
+# our CI time on every push, for now let's just run toil-cwl-runner separately
+# every weekday at midnight.
+
+on:
+  # push:  # Do NOT run toil-cwl-runner on every push!
+  # pull_request: (either on origin or on upstream pull request)
+  schedule:
+  # Instead, run it every weekday at midnight.
+    - cron: '0 0 * * 1-5'
+  workflow_dispatch:
+
+env:
+  BUILD_TYPE: Release
+
+defaults:
+  run:
+    shell: bash -l {0} # Invoke bash in login mode, NOT interactive mode.
+    # This will cause bash to look for the startup file ~/.bash_profile, NOT ~/.bashrc
+    # This is important since conda init writes to ~/.bashrc
+
+jobs:
+  build_and_run:
+    # See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency
+    # This will prevent DOS attacks from people blasting the CI with rapid fire commits.
+    concurrency:
+      group: ${{ github.workflow }}-${{ matrix.cwl_runner }}-${{ github.ref }}
+      cancel-in-progress: true
+    strategy:
+      fail-fast: false
+      matrix:
+        cwl_runner: ["toil-cwl-runner"]
+    runs-on: [self-hosted, linux]
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Setup mamba (linux, macos)
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniforge-variant: Mambaforge-pypy3
+        miniforge-version: latest
+        environment-file: system_deps.yml
+        activate-environment: mm-workflows
+        use-mamba: true
+        channels: conda-forge
+        python-version: "3.9.*" # pypy is not yet compatible with 3.10 and 3.11
+
+    - name: Docker pull
+      run: ./dockerPull.sh
+      # For self-hosted runners, make sure the docker cache is up-to-date.
+
+    - name: Install Workflow Inference Compiler
+      run: pip install ".[all]"
+
+    - name: PyTest Run Example Workflows
+      # NOTE: Do NOT add coverage to PYPY CI runs https://github.com/tox-dev/tox/issues/2252
+      run: pytest -k test_run_examples --workers 4 --cwl_runner ${{ matrix.cwl_runner }} # --cov
