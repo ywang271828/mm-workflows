@@ -1,0 +1,10 @@
+
+# docker build -f Dockerfile_create_diffdock_inputs -t mrbrandonwalker/create_diffdock_inputs .
+
+FROM python
+
+RUN apt-get update && apt-get install -y wget
+
+RUN apt-get clean
+
+COPY gen_diffdock_inputs.py /

@@ -1,0 +1,72 @@
+inputs:
+  protein_ligand_pairs:
+    type:
+      type: array
+      items: File
+  inference_steps:
+    type: int
+  samples_per_complex:
+    type: int
+  batch_size:
+    type: int
+  top_n_confident:
+    type: float
+  top_percent_confidence:
+    type: float
+  centroid_cutoff:
+    type: float
+  use_clustering_filter:
+    type: boolean
+  # cache:
+  #   type:
+  #     type: array
+  #     items: File
+
+steps:
+    # Since CWL does not have a pair type, we have to use an array
+    - extract_files:
+        in:
+          array: ~protein_ligand_pairs
+          first_file: "&protein_file"
+          second_file: "&ligand_file"
+
+    - sanitize_mol:
+        in:
+          ligand_path: "*ligand_file"
+          output_file: "&output_file"
+
+    - gen_diffdock_inputs:
+        in:
+          protein_path: "*protein_file"
+          ligand_path: "*output_file"
+          output: "&diffdock_input_file"
+          protein_path_out: "&protein_path"
+          ligand_path_out: "&ligand_path"
+
+    - diffdock_gpu:
+        in:
+          script_path: "diffdock_cmds.sh"
+          protein_ligand_inputs: "*diffdock_input_file"
+          protein_path: "*protein_path"
+          ligand_path: "*output_file"
+          inference_steps: ~inference_steps
+          samples_per_complex: ~samples_per_complex
+          batch_size: ~batch_size
+          output_files: "&diffdock_poses"
+          execution_time: "&execution_time"
+
+    - diffdock_rank_poses:
+        in:
+          top_n_confident: ~top_n_confident
+          top_percent_confidence: ~top_percent_confidence
+          output_files_path: "*diffdock_poses"
+          output_poses: "&output_poses"
+
+    - rmsd_pose_filter:
+        in:
+          crystal_pose_path: "*ligand_path"
+          predicted_poses: "*output_poses"
+          rmsd_json: "&rmsd"
+          centroid_cutoff: ~centroid_cutoff
+          filtered_poses: "&filtered_poses"
+          use_clustering_filter: ~use_clustering_filter

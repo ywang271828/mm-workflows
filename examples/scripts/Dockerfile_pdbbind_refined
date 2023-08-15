@@ -1,4 +1,4 @@
-FROM condaforge/mambaforge-pypy3
+FROM condaforge/mambaforge
 
 RUN apt-get update && apt-get install -y wget
 # Download the bdbbind dataset

@@ -34,3 +34,12 @@ sudo docker build --no-cache --pull -f Dockerfile_molgan -t ndonyapour/molgan .
 
 sudo docker build --no-cache --pull -f Dockerfile_pdbbind_refined -t pdbbind_refined_v2020 .  # NOTE: no username
 cd ../..
+
+cd examples/diffdock/
+sudo docker build --no-cache --pull -f Dockerfile_sanitize_mol -t mrbrandonwalker/sanitize_mol .
+sudo docker build --no-cache --pull -f Dockerfile_rmsd_poses -t mrbrandonwalker/rmsd_poses .
+sudo docker build --no-cache --pull -f Dockerfile_rank_diffdock_poses -t mrbrandonwalker/rank_diffdock_poses .
+sudo docker build --no-cache --pull -f Dockerfile_create_diffdock_inputs -t mrbrandonwalker/create_diffdock_inputs .
+sudo docker build --no-cache --pull -f Dockerfile_diffdock_cpu -t mrbrandonwalker/diffdock_cpu .
+sudo docker build --no-cache --pull -f Dockerfile_diffdock_gpu -t mrbrandonwalker/diffdock_gpu .
+cd ../..
