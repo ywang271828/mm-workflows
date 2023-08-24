@@ -1,7 +1,6 @@
 name: Send CI request
 
 on:
-  push:
   pull_request_target:
 
 jobs:
@@ -17,26 +16,19 @@ jobs:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
-      # To use this repository's private action,
-      # you must check out the repository
+      # Note: 1. To use this repository's private action, you must check out the repository
+      # 2. For "pull_request_target", use the custom actions from the base of the PR
+      # to check membership of the sender.
       - name: Checkout
         uses: actions/checkout@v3
-    
-      - name: Initiating repository dispatch event
-        if: github.event_name == 'push'
-        id: initiate_repo_dispatch_push
-        uses: ./.github/my_actions/repository_dispatch/
+
+      - name: Check Membership
+        uses: ./.github/my_actions/check_membership/ # Must start with ./
         with:
-          event_name: ${{ github.event_name }}
-          repository: ${{ github.repository }}
-          owner: ${{ github.repository_owner }}
-          ref_name: ${{ github.ref_name }}
-          commit_message: ${{ github.event.head_commit.message }}
-          target_repository: workflow-inference-compiler
-          access_token: ${{ steps.generate_token.outputs.token }}
+            account_name: ${{ github.event.pull_request.head.repo.owner.login }}
+            access_token: ${{ steps.generate_token.outputs.token }}
 
       - name: Create environment variables
-        if: github.event_name == 'pull_request_target'
         env:
           COMMIT_MESSAGE: ''
         run: |
@@ -46,25 +38,21 @@ jobs:
       # the commit message directly via the github API.
       # See https://github.com/orgs/community/discussions/28474
       - name: Checkout commit sha (Pull Request only)
-        if: github.event_name == 'pull_request_target'
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Get commit message (Pull Request only)
-        if: github.event_name == 'pull_request_target'
         run: |
           echo "commit_message=$(git show -s --format=%s)" >> $GITHUB_ENV
 
       - name: Initiating repository dispatch event
-        if: github.event_name == 'pull_request_target'
-        id: initiate_repo_dispatch_pr
         uses: ./.github/my_actions/repository_dispatch/
         with:
           event_name: ${{ github.event_name }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          owner: ${{ github.event.pull_request.head.repo.owner.login }}
-          ref_name: ${{ github.event.pull_request.head.ref }}
+          sender_repo: ${{ github.event.pull_request.head.repo.full_name }}
+          sender_repo_owner: ${{ github.event.pull_request.head.repo.owner.login }}
+          sender_repo_ref: ${{ github.event.pull_request.head.ref }}
           commit_message: ${{ env.commit_message }}
           target_repository: workflow-inference-compiler
           access_token: ${{ steps.generate_token.outputs.token }}
