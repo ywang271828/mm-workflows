@@ -92,7 +92,7 @@ try {
   console.log(`The event payload: ${payload}`);
 
   if (!verified) {
-    throw new Error(`Account ${account_name} does not pass the verification!`);
+    throw new Error(`Account ${account_name} is not authorized to run workflows.`);
   }
 } catch (error) {
   core.setFailed(error.message);
@@ -658,8 +658,8 @@ class OidcClient {
             const res = yield httpclient
                 .getJson(id_token_url)
                 .catch(error => {
-                throw new Error(`Failed to get ID Token. \n
-        Error Code : ${error.statusCode}\n
+                throw new Error(`Failed to get ID Token. \n 
+        Error Code : ${error.statusCode}\n 
         Error Message: ${error.result.message}`);
             });
             const id_token = (_a = res.result) === null || _a === void 0 ? void 0 : _a.value;
@@ -16860,7 +16860,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
-/******/
+/******/ 	
 /******/ 	// The require function
 /******/ 	function __nccwpck_require__(moduleId) {
 /******/ 		// Check if module is in cache
@@ -16874,7 +16874,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
-/******/
+/******/ 	
 /******/ 		// Execute the module function
 /******/ 		var threw = true;
 /******/ 		try {
@@ -16883,14 +16883,14 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 		} finally {
 /******/ 			if(threw) delete __webpack_module_cache__[moduleId];
 /******/ 		}
-/******/
+/******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/
+/******/ 	
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__nccwpck_require__.m = __webpack_modules__;
-/******/
+/******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/async module */
 /******/ 	(() => {
@@ -16960,7 +16960,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 			queue && (queue.d = 0);
 /******/ 		};
 /******/ 	})();
-/******/
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -16972,7 +16972,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 			}
 /******/ 		};
 /******/ 	})();
-/******/
+/******/ 	
 /******/ 	/* webpack/runtime/ensure chunk */
 /******/ 	(() => {
 /******/ 		__nccwpck_require__.f = {};
@@ -16985,7 +16985,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 			}, []));
 /******/ 		};
 /******/ 	})();
-/******/
+/******/ 	
 /******/ 	/* webpack/runtime/get javascript chunk filename */
 /******/ 	(() => {
 /******/ 		// This function allow to reference async chunks
@@ -16994,12 +16994,12 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 			return "" + chunkId + ".index.js";
 /******/ 		};
 /******/ 	})();
-/******/
+/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
-/******/
+/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -17010,23 +17010,23 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
 /******/ 	})();
-/******/
+/******/ 	
 /******/ 	/* webpack/runtime/compat */
-/******/
+/******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
-/******/
+/******/ 	
 /******/ 	/* webpack/runtime/require chunk loading */
 /******/ 	(() => {
 /******/ 		// no baseURI
-/******/
+/******/ 		
 /******/ 		// object to store loaded chunks
 /******/ 		// "1" means "loaded", otherwise not loaded yet
 /******/ 		var installedChunks = {
 /******/ 			179: 1
 /******/ 		};
-/******/
+/******/ 		
 /******/ 		// no on chunks loaded
-/******/
+/******/ 		
 /******/ 		var installChunk = (chunk) => {
 /******/ 			var moreModules = chunk.modules, chunkIds = chunk.ids, runtime = chunk.runtime;
 /******/ 			for(var moduleId in moreModules) {
@@ -17037,9 +17037,9 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 			if(runtime) runtime(__nccwpck_require__);
 /******/ 			for(var i = 0; i < chunkIds.length; i++)
 /******/ 				installedChunks[chunkIds[i]] = 1;
-/******/
+/******/ 		
 /******/ 		};
-/******/
+/******/ 		
 /******/ 		// require() chunk loading for javascript
 /******/ 		__nccwpck_require__.f.require = (chunkId, promises) => {
 /******/ 			// "1" is the signal for "already loaded"
@@ -17049,21 +17049,21 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 				} else installedChunks[chunkId] = 1;
 /******/ 			}
 /******/ 		};
-/******/
+/******/ 		
 /******/ 		// no external install chunk
-/******/
+/******/ 		
 /******/ 		// no HMR
-/******/
+/******/ 		
 /******/ 		// no HMR manifest
 /******/ 	})();
-/******/
+/******/ 	
 /************************************************************************/
-/******/
+/******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module used 'module' so it can't be inlined
 /******/ 	var __webpack_exports__ = __nccwpck_require__(6411);
 /******/ 	module.exports = __webpack_exports__;
-/******/
+/******/ 	
 /******/ })()
 ;
