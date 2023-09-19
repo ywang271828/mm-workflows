@@ -1,0 +1,19 @@
+
+# docker build -f Dockerfile_rmsd_poses -t mrbrandonwalker/rmsd_poses .
+
+FROM condaforge/mambaforge
+
+RUN apt-get update && apt-get install -y wget
+
+RUN conda install -c conda-forge rdkit openbabel --yes
+
+RUN conda init bash
+
+COPY rmsd_poses.py /
+
+RUN mamba clean --all --yes
+
+RUN pip cache purge
+
+RUN apt-get clean
+

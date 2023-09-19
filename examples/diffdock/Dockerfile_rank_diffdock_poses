@@ -1,0 +1,10 @@
+
+# docker build -f Dockerfile_rank_diffdock_poses -t mrbrandonwalker/rank_diffdock_poses .
+
+FROM python
+
+RUN apt-get update && apt-get install -y wget
+
+COPY rank_diffdock_poses.py /
+
+RUN apt-get clean

@@ -1,0 +1,83 @@
+steps:
+
+  - prep_complex:
+      in:
+        receptor: 6qtw_protein_processed.pdb
+        ligand: 6qtw_ligand.sdf
+        output_pdb_files: "&output_pdb_files"
+        output_ligand_files: "&output_ligand_files"
+
+  - copy_diffdock_cache:
+      in:
+        cache: "&cached_file"
+
+  - inputs_diffdock:
+      in:
+        protein_path_array: "*output_pdb_files"
+        ligand_path_array: "*output_ligand_files"
+        samples_per_complex: 20 # figure 3 left in DiffDock paper
+        inference_steps: 20 # figure S11 in DiffDock paper
+        batch_size: 16 # section D.3 in DiffDock paper
+        top_n_confident: 1000 # if using top_percent_confidence, then set top_n_confident to trivially high number
+        top_percent_confidence: 33 # take top third of most confident poses, see figure 3 right in DiffDock paper
+        centroid_cutoff: 5 # if centroid of all poses are with cutoff then take most confident pose, requires visual inspection
+        use_clustering_filter: false
+        samples_per_complex_out: "&samples_per_complex"
+        inference_steps_out: "&inference_steps"
+        batch_size_out: "&batch_size"
+        top_n_confident_out: "&top_n_confident"
+        protein_path_out: "&protein_path_bench"
+        ligand_path: "&ligand_path_bench"
+        top_percent_confidence_out: "&top_percent_confidence"
+        centroid_cutoff_out: "&centroid_cutoff"
+        use_clustering_filter_out: "&use_clustering_filter"
+
+  - zip_arrays:
+      in:
+        first_array: "*protein_path_bench"
+        second_array: "*ligand_path_bench"
+        zipped_array: "&protein_ligand_bench"
+
+# zipping together protein and ligand File arrays, so that if user wants to scatter with flat_crossproduct
+# over other inputs then the protein and ligand files will still have a 1-1 match to each other
+# Since CWL does not have a pair type, we have to use an array
+  - diffdock_workflow.yml:
+      scatter: [protein_ligand_pairs]
+      in:
+        protein_ligand_pairs: "*protein_ligand_bench"
+        inference_steps: "*inference_steps"
+        samples_per_complex: "*samples_per_complex"
+        batch_size: "*batch_size"
+        top_n_confident: "*top_n_confident"
+        top_percent_confidence: "*top_percent_confidence"
+        centroid_cutoff: "*centroid_cutoff"
+        use_clustering_filter: "*use_clustering_filter"
+        cache: "*cached_file"
+
+wic:
+  graphviz:
+    label: DiffDock
+
+  steps:
+    (1, prep_complex):
+      wic:
+        graphviz:
+          label: Receptor-Ligand Input
+    (2, copy_diffdock_cache):
+      wic:
+        graphviz:
+          label: Copy DiffDock cache
+    (3, benchmark_inputs_diffdock):
+      wic:
+        graphviz:
+          label: Benchmark Inputs
+    (4, zip_arrays):
+      wic:
+        graphviz:
+          label: Zip Protein-Ligands
+    (5, diffdock_workflow.yml):
+      wic:
+        inlineable: False
+        namespace: gpu_diffdock
+        graphviz:
+          label: Scatter DiffDock

@@ -1,0 +1,18 @@
+
+# docker build -f Dockerfile_sanitize_mol -t mrbrandonwalker/sanitize_mol .
+
+FROM condaforge/mambaforge
+
+RUN apt-get update && apt-get install -y wget
+
+RUN conda install -c conda-forge rdkit openbabel --yes
+
+RUN conda init bash
+
+COPY sanitize_mol.py /
+
+RUN mamba clean --all --yes
+
+RUN pip cache purge
+
+RUN apt-get clean
