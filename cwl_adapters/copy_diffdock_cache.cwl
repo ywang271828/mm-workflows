@@ -10,7 +10,7 @@ label: Copy cache file from container
 # `rsync -r inputs.cache_path runtime.outdir`
 # need the /. included in the inputs.cache_path for cp -r to work and then glob the cached files
 baseCommand: cp
-arguments: ["-r", $(inputs.cache_path), $(runtime.outdir)]
+arguments: ["-r", $(inputs.cache_path), "."]
 
 requirements:
   InlineJavascriptRequirement: {}
