@@ -89,7 +89,7 @@ VCS = "git"
 style = "pep440-pre"
 versionfile_source = "src/mm_workflows/_version.py"
 versionfile_build = "mm_workflows/_version.py"
-tag_prefix = "''"
+tag_prefix = ""
 # Based on https://packaging.python.org/en/latest/tutorials/packaging-projects/
 
 [tool.mypy]
