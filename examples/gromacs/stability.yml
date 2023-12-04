@@ -36,4 +36,4 @@ wic:
   steps:
     (2, basic.yml):
       wic:
-        inlineable: False  # due to renaming ref-t and ref-p
+        inlineable: True  # due to renaming ref-t and ref-p

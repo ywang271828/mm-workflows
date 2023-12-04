@@ -111,10 +111,10 @@ wic:
           label: Fix Side Chains
     (3, convert_pdbqt.yml):
       wic:
-        inlineable: False
+        inlineable: True
     (4, autodock_vina_rescore.yml):
       wic:
-        inlineable: False
+        inlineable: True
     (5, duplicate):
       wic:
         graphviz:
@@ -125,15 +125,15 @@ wic:
           label: Apply Docking\nScore Cutoff
     (7, setup_pdb.yml):
       wic:
-        inlineable: False # Due to yml wic tag inlineing issue and ~pdb_id
+        inlineable: True # Due to yml wic tag inlineing issue and ~pdb_id
         graphviz:
           label: Setup PDB
     (8, gen_topol_params.yml):
       wic:
-        inlineable: False
+        inlineable: True
     (9, stability.yml):
       wic:
-        inlineable: False # Due to yml wic tag inlineing issue and ~ inputs
+        inlineable: True # Due to yml wic tag inlineing issue and ~ inputs
         steps:
           (1, setup.yml):
             wic:
@@ -167,7 +167,7 @@ wic:
                     backend: complex
     (10, autodock_vina_rescore.yml):
       wic:
-        inlineable: False
+        inlineable: True
     (11, scatter_plot):
       wic:
         graphviz:

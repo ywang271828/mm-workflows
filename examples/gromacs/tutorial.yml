@@ -1,5 +1,16 @@
 # This is based on the excellent gromacs CWL tutorial
 # https://mmb.irbbarcelona.org/biobb/availability/tutorials/cwl
+inputs:
+  crd_path:
+    type: File
+    format:
+    - edam:format_1476
+    - edam:format_2033
+  top_zip_path:
+    type: File
+    format:
+    - edam:format_3987
+
 steps:
   - modeling.yml:
   - stability.yml:
@@ -8,6 +19,8 @@ steps:
         dt: 0.002
         temperature: 298.0
         pressure: 1.0
+        crd_path: ~crd_path
+        top_zip_path: ~top_zip_path
 
 wic:
   graphviz:
@@ -15,7 +28,7 @@ wic:
   steps:
     (2, stability.yml):
       wic:
-        inlineable: False # Due to yml wic tag inlineing issue and ~ inputs
+        inlineable: True # Due to yml wic tag inlineing issue and ~ inputs
         steps:
           (2, basic.yml):
             wic:

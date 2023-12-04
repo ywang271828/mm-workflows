@@ -126,7 +126,7 @@ wic:
           label: fix_side_chain of protein structure.
     (7, minimize_ligand_only.yml):
       wic:
-        inlineable: False
+        inlineable: True
         graphviz:
           label: minimize (obminimize) ligand structure.
     (8, smina_docking):

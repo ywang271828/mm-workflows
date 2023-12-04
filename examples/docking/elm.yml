@@ -37,7 +37,7 @@ wic:
   steps:
     (1, setup_pdb.yml):
       wic:
-        inlineable: False # Due to yml wic tag inlineing issue and ~pdb_id
+        inlineable: True # Due to yml wic tag inlineing issue and ~pdb_id
     (3, extract_molecules_sdf):
       wic:
         graphviz:
@@ -49,7 +49,7 @@ wic:
     (5, dsb.yml):
       wic:
         # Scattering changes the input/output types and thus creates a barrier to inlineing.
-        inlineable: False
+        inlineable: True
 
 # Beware 0 vs 1 -based indexing! JavaScript (and thus CWL) uses 0-based indices.
 # If you accidentally use 1-based indices, the last array access will be out of
